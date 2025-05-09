@@ -1,4 +1,4 @@
-# ===== BACKEND: Flask API (app.py) =====
+
 import os
 from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
