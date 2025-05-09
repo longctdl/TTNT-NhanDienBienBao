@@ -31,7 +31,7 @@ labels = [
 ]
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3001"}})
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -40,22 +40,18 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def predict_sign(image_path):
-    # Load ảnh và resize
+
     img = Image.open(image_path).resize((32, 32))
     img_array = np.array(img).astype('float32') / 255.0
 
-    # Nếu ảnh có kênh alpha (RGBA), loại bỏ alpha channel
     if img_array.shape[-1] == 4:
         img_array = img_array[..., :3]
 
-    # Nếu ảnh grayscale (chỉ có 2 chiều), thêm kênh thứ 3
     if len(img_array.shape) == 2:
         img_array = np.stack([img_array]*3, axis=-1)
 
-    # Thêm batch dimension
     img_array = np.expand_dims(img_array, axis=0)
 
-    # Dự đoán
     prediction = model.predict(img_array)
     predicted_class = np.argmax(prediction)
     return labels[predicted_class]
@@ -69,10 +65,9 @@ def predict():
         file_path = os.path.join(UPLOAD_FOLDER, filename)
         file.save(file_path)
 
-        # Gọi hàm predict_sign của bạn để xử lý ảnh
         label = predict_sign(file_path)
         if label:
-            return jsonify({"label": label})  # Trả về kết quả dự đoán
+            return jsonify({"label": label})
         else:
             return jsonify({"label": "Error processing image"}), 500
     return jsonify({"label": "Invalid file format"}), 400

@@ -70,3 +70,13 @@
   border-radius: 5px;
   text-align: center;
 }
+
+.prediction.success {
+  background-color: #c6f6d5;
+  color: #2f855a;
+}
+
+.prediction.error {
+  background-color: #fed7d7;
+  color: #c53030;
+}

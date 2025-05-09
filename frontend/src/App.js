@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./App.css"; // Import file CSS
+import "./App.css";
 
 export default function App() {
   const [image, setImage] = useState(null);
@@ -27,11 +27,11 @@ export default function App() {
       const response = await axios.post(
         "http://localhost:5000/api/predict",
         formData,
-        { headers: { "Content-Type": "multipart/form-data" } } // Đảm bảo header là "multipart/form-data"
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       console.log("Response from backend:", response.data);
       if (response.data && response.data.label) {
-        setLabel(response.data.label); // Cập nhật label từ backend
+        setLabel(response.data.label);
       } else {
         setLabel("No prediction available.");
       }
@@ -63,7 +63,13 @@ export default function App() {
         </form>
 
         {label && (
-          <div className="prediction">
+          <div
+            className={`prediction ${
+              label.includes("Error") || label.includes("No prediction")
+                ? "error"
+                : "success"
+            }`}
+          >
             <strong>Prediction:</strong> {label}
           </div>
         )}
